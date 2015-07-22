@@ -30,3 +30,4 @@ node_modules
 data/
 .DS_Store
 *.xlsx
+config/
