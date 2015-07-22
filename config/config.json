@@ -1,0 +1,9 @@
+{
+  "startDate": "2013-10-01",
+  "endDate": "2014-11-27",
+  "consumerSecret": "Um4mbPEGYwPrDDs8VrfKYcXsUGUb4MlgR9IWfdCR0qVZ4mSIx7",
+  "consumerKey": "0UQzrRBYkzfNo9AX6ZoeJzydz",
+  "accessToken": "22752868-wSXyqlBgM7qtRR3LAvns97OxwTGQBEBi0IE8lEkS9",
+  "accessTokenSecret": "kzBhr7LhbAL8XpNa1gvZuDd8g2jx9CNI61PJ6vpcfKDXk",
+  "db": "mongodb://localhost/tweetScraper3"
+}
