@@ -14,4 +14,4 @@
 
 // Module initialization (at first load)
 
-module.exports = require( './lib/scraper2' );
+module.exports = require( './lib/scraper' );
