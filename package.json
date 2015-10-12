@@ -1,0 +1,27 @@
+{
+  "name": "twitter-scraper",
+  "version": "1.0.0",
+  "description": "Twitter scraper",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/janez87/TwitterScraper"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/janez87/TwitterScraper/issues"
+  },
+  "homepage": "https://github.com/janez87/TwitterScraper#readme",
+  "dependencies": {
+    "bluebird": "^2.9.34",
+    "cheerio": "^0.19.0",
+    "co": "^4.6.0",
+    "debug": "^2.2.0",
+    "jsdom": "^6.3.0",
+    "lodash": "3.x",
+    "mongodb": "^2.0.45",
+    "request": "^2.61.0"
+  }
+}
