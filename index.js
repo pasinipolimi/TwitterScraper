@@ -14,4 +14,5 @@
 
 // Module initialization (at first load)
 
-module.exports = require( './lib/scraper' );
+// module.exports.Scraper = require( './lib/stream' );
+module.exports.StreamScraper = require( './lib/scraper' );
