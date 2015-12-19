@@ -1,5 +1,5 @@
 {
-  "name": "@volox/twitter-scraper",
+  "name": "twitter-scraper",
   "version": "2.0.0",
   "description": "Twitter scraper",
   "main": "index.js",
