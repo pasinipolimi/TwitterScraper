@@ -24,6 +24,7 @@
     "request": "2.x"
   },
   "devDependencies": {
+    "eslint-config-volox": "*",
     "chai": "3.x",
     "mocha": "2.x"
   }
