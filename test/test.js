@@ -5,7 +5,10 @@ let StreamScraper = require( '../' ).StreamScraper;
 let expect = chai.expect;
 
 // let query = 'from:riccardovolo since:2015-01-01 until:2015-05-02';
-let query = 'monza lang:it since:2015-07-21 until:2015-07-22';
+// let query = 'monza lang:it since:2015-07-09 until:2015-07-10';
+// let query = 'lissone lang:it since:2015-01-01 until:2015-05-12';
+let query = 'arcore lang:it since:2015-01-01 until:2015-06-25';
+// let query = '#yourexpo2015';
 
 
 describe( 'StreamScraper', function() {
@@ -21,11 +24,25 @@ describe( 'StreamScraper', function() {
     scraper.start();
   } );
 
-  describe( 'Test volo', function() {
-    it( 'should get some', function() {
+  describe( 'Test arcore', function() {
+    it( 'should get almost tweets', function() {
+      // console.log( 'tweets', tweets.map( t => t.text ) );
       console.log( 'Got %d tweets', tweets.length );
-      // console.log( 'Got tweets', tweets.map( d=> d.tweetId ) );
-      // expect( tweets ).to.have.length( 4 );
+      // expect( tweets ).to.have.length.within( 2500, 2871 );
+    } );
+  } );
+
+  describe.skip( 'Test lissone', function() {
+    it( 'should get almost 2871 tweets', function() {
+      console.log( 'Got %d tweets', tweets.length );
+      expect( tweets ).to.have.length.within( 2500, 2900 );
+    } );
+  } );
+
+  describe.skip( 'Test monza', function() {
+    it( 'should get 344 tweets some', function() {
+      console.log( 'Got %d tweets', tweets.length );
+      expect( tweets ).to.have.length.within( 300, 360 );
     } );
   } );
 
