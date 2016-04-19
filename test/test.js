@@ -1,30 +1,31 @@
 'use strict';
 
 let chai = require( 'chai' );
-let StreamScraper = require( '../' ).StreamScraper;
+let scrape = require( '../' ).scrape;
 let expect = chai.expect;
 
-// let query = 'from:riccardovolo since:2015-01-01 until:2015-05-02';
+let query = 'from:riccardovolo since:2015-01-01 until:2015-05-02';
 // let query = 'monza lang:it since:2015-07-09 until:2015-07-10';
 // let query = 'lissone lang:it since:2015-01-01 until:2015-05-12';
-let query = 'arcore lang:it since:2015-01-01 until:2015-06-25';
+// let query = 'arcore lang:it since:2015-01-01 until:2015-06-25';
 // let query = '#yourexpo2015';
+// let query = '"human technopole" OR arexpo OR  OR humantechnopole OR human-techno-pole OR dopoexpo OR dopo-expo OR postexpo OR post-expo -from:Post_Expo since:2015-12-01';
 
 
 describe( 'StreamScraper', function() {
   this.timeout( 0 );
 
-  let scraper;
   let tweets = [];
 
-  before( function( done ) {
-    scraper = new StreamScraper( query );
-    scraper.on( 'data', d => tweets.push( d ) );
-    scraper.on( 'end', done );
-    scraper.start();
+  before( function() {
+    return scrape( query )
+    .then( t => tweets = t );
+  } );
+  after( function() {
+    console.log( 'Scraped %d tweets', tweets.length );
   } );
 
-  describe( 'Test arcore', function() {
+  describe.skip( 'Test arcore', function() {
     it( 'should get almost tweets', function() {
       // console.log( 'tweets', tweets.map( t => t.text ) );
       console.log( 'Got %d tweets', tweets.length );
@@ -46,20 +47,19 @@ describe( 'StreamScraper', function() {
     } );
   } );
 
-  describe.skip( 'Test volo', function() {
-
+  describe( 'Test volo', function() {
     it( 'should get 4 tweets', function() {
       expect( tweets ).to.have.length( 4 );
     } );
     it( 'the first tweet id should be 590789562064117760', function() {
       // Check first tweet
-      expect( tweets[0] ).to.have.property( 'tweetId' );
-      expect( tweets[0].tweetId ).to.be.equal( '590789562064117760' );
+      expect( tweets[0] ).to.have.property( 'id' );
+      expect( tweets[0].id ).to.be.equal( '590789562064117760' );
     } );
     it( 'the last tweet id should have timestamp 1426163528', function() {
       // Check last tweet
       expect( tweets[3] ).to.have.property( 'timestamp' );
-      expect( tweets[3].timestamp ).to.be.equal( '1426163528' );
+      expect( tweets[3].timestamp ).to.be.equal( 1426163528 );
     } );
   } );
 } );

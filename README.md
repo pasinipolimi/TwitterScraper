@@ -8,10 +8,10 @@ Retrieve basic tweet data based on the specified query. Requires NodeJS 4+.
 'use strict';
 
 let stream = require( 'stream' );
-let StreamScraper = require( 'twitter-scraper' ).StreamScraper;
+let Scraper = require( 'twitter-scraper' ).Scraper;
 
 let query = 'from:riccardovolo since:2015-05-01 until:2015-05-02';
-let scraper = new StreamScraper( query );
+let scraper = new Scraper( query );
 let toConsole = new stream.Writable( {
   objectMode: true,
   write: function( tweet, enc, cb ) {
@@ -31,11 +31,9 @@ The data in the stream have the following format:
 
 ```js
 {
-    "tweetId": "123123131312",  // Tweet id as string
-    "userId": "12314141",       // User id as string
+    "id": "123123131312",       // Tweet id as string
     "text": "tweet tweeeet",    // Text
-    "timestamp": "123123123",   // Unix seconds
-    "date": <Date>,             // Date object
+    "timestamp": 123123123,     // Unix seconds
 }
 ```
 

@@ -1,31 +1,41 @@
 {
   "name": "twitter-scraper",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Twitter scraper",
-  "main": "index.js",
-  "scripts": {
-    "test": "mocha"
-  },
+  "main": "./lib/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Volox/TwitterScraper"
   },
-  "author": "",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Volox/TwitterScraper/issues"
   },
   "homepage": "https://github.com/Volox/TwitterScraper#readme",
+  "scripts": {
+    "prepublish": "gulp",
+    "pretest": "gulp",
+    "test": "mocha"
+  },
   "dependencies": {
-    "bluebird": "2.x",
     "cheerio": "0.x",
     "debug": "2.x",
-    "lodash": "3.x",
-    "request": "2.x"
+    "request-promise": "3.x"
   },
+  "typings": "lib/index.d.ts",
+  "author": "Volox",
+  "license": "MIT",
   "devDependencies": {
-    "eslint-config-volox": "*",
+    "babel-plugin-transform-es2015-destructuring": "6.x",
+    "babel-plugin-transform-es2015-parameters": "6.x",
+    "babel-plugin-transform-es2015-spread": "6.x",
     "chai": "3.x",
-    "mocha": "2.x"
+    "del": "2.x",
+    "gulp": "3.x",
+    "gulp-babel": "6.x",
+    "gulp-sourcemaps": "1.x",
+    "gulp-typescript": "2.x",
+    "merge2": "1.x",
+    "mocha": "2.x",
+    "tslint": "3.x"
   }
 }

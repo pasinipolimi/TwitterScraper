@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitAny": false,
+    "allowJs": true,
+    "declaration": true,
+    "target": "es6"
+  },
+  "files": [
+    "typings/main.d.ts",
+    "src/utils.ts",
+    "src/types.ts",
+    "src/index.ts"
+  ],
+  "filesGlob": [
+    "typings/main.d.ts",
+    "src/**/*.ts"
+  ]
+}
