@@ -2,11 +2,11 @@
   "name": "urbanscope-crawler",
   "version": false,
   "dependencies": {
+    "cheerio": "github:Volox/typed-cheerio",
     "debug": "registry:npm/debug#2.0.0+20160211003958",
     "request": "registry:npm/request#2.69.0+20160304121250"
   },
   "ambientDependencies": {
-    "cheerio": "registry:dt/cheerio#0.17.0+20160407085313",
     "node": "registry:dt/node#4.0.0+20160412142033",
     "request-promise": "registry:dt/request-promise#0.4.2+20160316155526"
   }

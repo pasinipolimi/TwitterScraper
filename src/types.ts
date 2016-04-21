@@ -1,6 +1,7 @@
 // Load system modules
 
 // Load modules
+import * as cheerio from 'cheerio';
 
 // Load my modules
 
@@ -16,7 +17,7 @@ export interface MaxPosition {
 }
 export interface PageResponse {
   html: string,
-  cheerio?: CheerioStatic,
+  cheerio?: cheerio.Static,
   last?: string,
 }
 export interface Tweet {

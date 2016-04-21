@@ -169,12 +169,12 @@ export class Scraper extends Readable {
 
 
   // Tweet data extraction
-  protected parsePage( $: CheerioStatic ): Tweet[] {
+  protected parsePage( $: cheerio.Static ): Tweet[] {
     const tweets = this.getTweetIds( $ );
     this.sendTweets( tweets );
     return tweets;
   }
-  protected getTweetIds( $: CheerioStatic ): Tweet[] {
+  protected getTweetIds( $: cheerio.Static ): Tweet[] {
     const divs = $( TWEETS_SELECTOR ).toArray();
 
     const tweets: Tweet[] = [];
