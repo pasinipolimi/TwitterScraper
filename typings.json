@@ -1,5 +1,5 @@
 {
-  "name": "urbanscope-crawler",
+  "name": "twitter-scraper",
   "version": false,
   "dependencies": {
     "cheerio": "github:Volox/typed-cheerio",

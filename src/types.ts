@@ -1,7 +1,7 @@
 // Load system modules
 
 // Load modules
-import * as cheerio from 'cheerio';
+import cheerio = require( 'cheerio' );
 
 // Load my modules
 

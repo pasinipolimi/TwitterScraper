@@ -5,7 +5,7 @@ import { format as formatUrl } from 'url'
 // Load modules
 import initDebug = require( 'debug' );
 import request = require( 'request-promise' );
-import * as cheerio from 'cheerio';
+import cheerio = require( 'cheerio' );
 
 // Load my modules
 import { Tweet, PageResponse, MaxPosition } from './types';
