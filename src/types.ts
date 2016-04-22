@@ -11,19 +11,19 @@ import cheerio = require( 'cheerio' );
 
 // Module interfaces declaration
 export interface MaxPosition {
-  session: string,
-  fixed: string,
-  last: string,
+  session: string;
+  fixed: string;
+  last: string;
 }
 export interface PageResponse {
-  html: string,
-  cheerio?: cheerio.Static,
-  last?: string,
+  html: string;
+  cheerio?: cheerio.Static;
+  last?: string;
 }
 export interface Tweet {
-  id: string,
-  text: string,
-  timestamp: number,
+  id: string;
+  text: string;
+  timestamp: number;
 }
 // Module types declaration
 

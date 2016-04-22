@@ -1,6 +1,6 @@
 // Load system modules
-import { Readable } from 'stream'
-import { format as formatUrl } from 'url'
+import { Readable } from 'stream';
+import { format as formatUrl } from 'url';
 
 // Load modules
 import initDebug = require( 'debug' );
@@ -17,8 +17,8 @@ const TW_QUERY_PATH = 'search';
 const TW_AJAX_PATH = 'i/search/timeline';
 const SESSION_CONTAINER = '.stream-container[data-max-position]';
 const TWEETS_SELECTOR = '.stream-item[data-item-id]';
-const REQUEST_TIMEOUT = 1000*10; // 10s
-const RETRY_DELAY = 1000*5; // 5s
+const REQUEST_TIMEOUT = 1000 * 10; // 10s
+const RETRY_DELAY = 1000 * 5; // 5s
 
 // Module variables declaration
 
@@ -84,11 +84,11 @@ export class Scraper extends Readable {
       session: parts[2],
       fixed: parts[1],
       last: parts[0],
-    }
+    };
   }
 
   // Twitter URL
-  protected getTwitterUrl( query: string, maxPosition?:string ) {
+  protected getTwitterUrl( query: string, maxPosition?: string ) {
     const qs = {
       q: query,
       max_position: maxPosition,
@@ -128,7 +128,7 @@ export class Scraper extends Readable {
         debug( 'Error %s', err.code, err.stack );
         debug( 'REDO REQUEST' );
       }
-    } while( true )
+    } while( true );
 
     // Get html
     let html: string = response;
@@ -155,7 +155,8 @@ export class Scraper extends Readable {
     const pageUrl = this.getTwitterUrl( query );
 
     // Extract the parsed page as $
-    const { cheerio: $ } = await this.getPage( pageUrl );
+    const pageResult = await this.getPage( pageUrl );
+    const $ = pageResult.cheerio;
     const maxPosition = $( SESSION_CONTAINER ).attr( 'data-max-position' );
 
     const tweets = this.parsePage( $ );
@@ -199,7 +200,7 @@ export class Scraper extends Readable {
   }
   protected sendTweets( tweets: Tweet[] ) {
     for( const tweet of tweets ) {
-      this.sendTweet( tweet )
+      this.sendTweet( tweet );
     }
   }
 
@@ -209,11 +210,21 @@ export class Scraper extends Readable {
     debug( 'Loop for: %s', last );
     const maxPosition = this.getMaxPosition( last );
     const pageUrl = this.getTwitterUrl( this.query, maxPosition );
-    const { cheerio: $, last: newLast } = await this.getPage( pageUrl );
+    const pageResult = await this.getPage( pageUrl );
+    const $ = pageResult.cheerio;
+    const newLast = pageResult.last;
 
+    // Parse results
     this.parsePage( $ );
 
-    return newLast;
+    // Exit strategy
+    if( newLast===last ) {
+      debug( 'No more data, bye' );
+      this.push( null );
+      return;
+    }
+
+    await this.loop( newLast );
   }
 
   // Public methods
@@ -223,26 +234,10 @@ export class Scraper extends Readable {
     debug( 'Got maxPosition: ', maxPosition );
 
     this.session = maxPosition.session;
-    this.fixed = fixed || maxPosition.session;
-    last = last || this.lastTweet.id || maxPosition.last;
+    this.fixed = fixed || maxPosition.fixed;
 
-    do {
-      try {
-        const lastPushedId = this.lastTweet.id;
-        debug( 'lastPushedId===last: %s===%s', lastPushedId, last );
-        if( lastPushedId===last ) break;
-        last = lastPushedId;
+    await this.loop( last || maxPosition.last );
 
-        await this.loop( last );
-      } catch( err ) {
-        this.emit( 'error', err );
-        this.push( null );
-        throw err;
-      }
-    } while( true )
-
-    // Stop the stream
-    this.push( null );
     return this.total;
   }
 }
