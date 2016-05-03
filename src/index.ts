@@ -4,7 +4,7 @@ import { format as formatUrl } from 'url';
 
 // Load modules
 import initDebug = require( 'debug' );
-import request = require( 'request-promise' );
+import request = require( 'request' );
 import cheerio = require( 'cheerio' );
 
 // Load my modules
@@ -25,28 +25,20 @@ const RETRY_DELAY = 1000 * 5; // 5s
 // Module interfaces declaration
 
 // Module functions declaration
-export function scrape( query: string, callback?: Function ): Promise<Tweet[]> {
+export function scrape( query: string, callback: ( err: Error, tweets?: Tweet[] ) => any ) {
   const tweets: Tweet[] = [];
 
   const scraper = new Scraper( query );
   scraper.on( 'data', t => tweets.push( t ) );
+  scraper.on( 'end', () => callback( null, tweets ) );
+  scraper.on( 'error', err => callback( err ) );
 
-  return scraper
-  .start()
-  .then( ()=> {
-    if( callback ) callback( null, tweets );
-    return tweets;
-  } )
-  .catch( err => {
-    if( callback ) callback( err );
-    throw err;
-  } )
-  ;
+  return scraper.start();
 }
 // Module class declaration
 export class Scraper extends Readable {
   protected query: string;
-  protected total: number = 0;
+  public total: number = 0;
   protected session: string = null;
   protected fixed: string = null;
   protected lastTweet: Tweet = null;
@@ -66,7 +58,9 @@ export class Scraper extends Readable {
   _read() {}
   toString() { return 'TwitterScraper'; }
 
-
+  // unleak( s: string ): string {
+    // return ( ' ' + s ).substr( 1 );
+  // }
 
   // Max position is a string in the format:
   // TWEET-<numbers>-<numbers>-<sessionId>
@@ -112,60 +106,65 @@ export class Scraper extends Readable {
 
 
   // Requests
-  protected async getPage( url: string ): Promise<PageResponse> {
+  protected getPage( url: string, callback: ( err: Error, response?: PageResponse ) => any ) {
     const options = {
       url: url,
       json: true,
       timeout: REQUEST_TIMEOUT,
     };
 
-    let response: any;
-    do {
-      try {
-        response = await request( options );
-        break; // Exit loop
-      } catch( err ) {
+    return request( options, ( err, req, body ) => {
+      // Handle errors
+      if( err ) {
         debug( 'Error %s', err.code, err.stack );
         debug( 'REDO REQUEST' );
+        return this.getPage( url, callback );
       }
-    } while( true );
 
-    // Get html
-    let html: string = response;
+      // Parse response, get html
+      let html: string = body;
 
-    // Create response
-    const res: PageResponse = {
-      html: html,
-    };
+      // Create response
+      const res: PageResponse = {
+        html: html,
+      };
 
-    // In case of AJAX call
-    if( typeof response!=='string' ) {
-      const last = this.parseMaxPosition( response.min_position ).last;
-      res.html = response.items_html;
-      res.last = last;
-    }
+      // In case of AJAX call
+      if( typeof body!=='string' ) {
+        const last = this.parseMaxPosition( body.min_position ).last;
+        res.html = body.items_html;
+        res.last = last;
+      }
 
-    // Parse the page with cheerio
-    res.cheerio = cheerio.load( res.html );
+      // Parse the page with cheerio
+      res.cheerio = cheerio.load( res.html );
 
-    return res;
+      return callback( null, res );
+    } );
   }
-  protected async getSession( query: string ): Promise<MaxPosition> {
+  protected getSession( query: string, callback: ( err: Error, maxPosition?: MaxPosition ) => any ) {
     debug( 'Get session' );
     const pageUrl = this.getTwitterUrl( query );
 
-    // Extract the parsed page as $
-    const pageResult = await this.getPage( pageUrl );
-    const $ = pageResult.cheerio;
-    const maxPosition = $( SESSION_CONTAINER ).attr( 'data-max-position' );
+    return this.getPage( pageUrl, ( err, pageResult ) => {
+      // Pass back the error
+      if( err ) return callback( err );
 
-    const tweets = this.parsePage( $ );
+      // Extract the parsed page as $
+      const $ = pageResult.cheerio;
+      const maxPositionStr = $( SESSION_CONTAINER ).attr( 'data-max-position' );
+      // const maxPositionStr = this.unleak( $( SESSION_CONTAINER ).attr( 'data-max-position' ) );
 
-    if( maxPosition ) {
-      return this.parseMaxPosition( maxPosition );
-    } else {
-      throw new Error( '"data-max-position" not found in "'+SESSION_CONTAINER+'"' );
-    }
+      const tweets = this.parsePage( $ );
+
+      if( maxPositionStr ) {
+        const maxPosition = this.parseMaxPosition( maxPositionStr );
+        return callback( null, maxPosition );
+      } else {
+        const error = new Error( '"data-max-position" not found in "'+SESSION_CONTAINER+'"' );
+        return callback( error );
+      }
+    } );
   }
 
 
@@ -183,6 +182,9 @@ export class Scraper extends Readable {
       const id = $( div ).attr( 'data-item-id' );
       const text = $( '.tweet-text', div ).text();
       const timestamp = Number( $( '._timestamp', div ).attr( 'data-time' ) );
+      // const id = this.unleak( $( div ).attr( 'data-item-id' ) );
+      // const text = this.unleak( $( '.tweet-text', div ).text() );
+      // const timestamp = Number( this.unleak( $( '._timestamp', div ).attr( 'data-time' ) ) );
 
       tweets.push( { id, text, timestamp } );
     }
@@ -206,39 +208,40 @@ export class Scraper extends Readable {
 
 
   // Loop page loop
-  protected async loop( last?: string ): Promise<string> {
+  protected loop( last?: string ) {
     debug( 'Loop for: %s', last );
     const maxPosition = this.getMaxPosition( last );
     const pageUrl = this.getTwitterUrl( this.query, maxPosition );
-    const pageResult = await this.getPage( pageUrl );
-    const $ = pageResult.cheerio;
-    const newLast = pageResult.last;
 
-    // Parse results
-    this.parsePage( $ );
+    return this.getPage( pageUrl, ( err, pageResult ) => {
+      const $ = pageResult.cheerio;
+      const newLast = pageResult.last;
 
-    // Exit strategy
-    if( newLast===last ) {
-      debug( 'No more data, bye' );
-      this.push( null );
-      return;
-    }
+      // Parse results
+      this.parsePage( $ );
 
-    await this.loop( newLast );
+      // Exit strategy
+      if( newLast===last ) {
+        debug( 'No more data, bye' );
+        this.push( null );
+        return;
+      }
+
+      // Start nel loop
+      setImmediate( () => this.loop( newLast ) );
+    } );
   }
 
   // Public methods
-  async start( last?: string, fixed?: string ): Promise<number> {
+  start( last?: string, fixed?: string ) {
+    return this.getSession( this.query, ( err, maxPosition ) => {
+      debug( 'Got maxPosition: ', maxPosition );
 
-    const maxPosition = await this.getSession( this.query );
-    debug( 'Got maxPosition: ', maxPosition );
+      this.session = maxPosition.session;
+      this.fixed = fixed || maxPosition.fixed;
 
-    this.session = maxPosition.session;
-    this.fixed = fixed || maxPosition.fixed;
-
-    await this.loop( last || maxPosition.last );
-
-    return this.total;
+      this.loop( last || maxPosition.last );
+    } );
   }
 }
 

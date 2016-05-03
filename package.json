@@ -18,9 +18,9 @@
     "test": "mocha"
   },
   "dependencies": {
-    "cheerio": "0.x",
+    "cheerio": "0.19.x",
     "debug": "2.x",
-    "request-promise": "3.x"
+    "request": "2.x"
   },
   "typings": "lib/index",
   "author": "Volox",
