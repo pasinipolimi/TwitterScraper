@@ -1,6 +1,6 @@
 {
   "name": "twitter-scraper",
-  "version": "4.2.1",
+  "version": "5.0.0",
   "description": "Twitter scraper",
   "main": "./lib/index.js",
   "repository": {
