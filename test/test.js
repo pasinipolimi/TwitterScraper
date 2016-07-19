@@ -5,7 +5,7 @@ let scrape = require( '../' ).scrape;
 let expect = chai.expect;
 
 
-describe( 'Support single page results', function() {
+describe.skip( 'Support single page results', function() {
   this.timeout( 0 );
   let query = 'from:riccardovolo since:2015-01-01 until:2015-05-02';
   let tweets = [];
@@ -35,7 +35,7 @@ describe( 'Support single page results', function() {
 } );
 
 
-describe( 'Support multi page results', function() {
+describe.skip( 'Support multi page results', function() {
   this.timeout( 0 );
   let query = '#yourexpo2015';
   let tweets = [];
