@@ -185,8 +185,9 @@ export class Scraper extends Readable {
       // const id = this.unleak( $( div ).attr( 'data-item-id' ) );
       // const text = this.unleak( $( '.tweet-text', div ).text() );
       // const timestamp = Number( this.unleak( $( '._timestamp', div ).attr( 'data-time' ) ) );
+      const date = new Date( timestamp*1000 );
 
-      tweets.push( { id, text, timestamp } );
+      tweets.push( { id, text, timestamp, date } );
     }
 
     return tweets;

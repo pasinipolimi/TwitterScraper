@@ -24,6 +24,7 @@ export interface Tweet {
   id: string;
   text: string;
   timestamp: number;
+  date: Date;
 }
 // Module types declaration
 
