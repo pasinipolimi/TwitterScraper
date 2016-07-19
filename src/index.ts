@@ -130,7 +130,7 @@ export class Scraper extends Readable {
       };
 
       // In case of AJAX call
-      if( typeof body!=='string' ) {
+      if( body && body.min_position ) {
         const last = this.parseMaxPosition( body.min_position ).last;
         res.html = body.items_html;
         res.last = last;
