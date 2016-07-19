@@ -34,6 +34,7 @@ typings
 lib
 
 # Do not sync config files
+.vscode
 
 ### SublimeText project files
 *.sublime-workspace
