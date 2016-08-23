@@ -25,6 +25,7 @@ export interface Tweet {
   text: string;
   timestamp: number;
   date: Date;
+  retweeter: String;
 }
 // Module types declaration
 

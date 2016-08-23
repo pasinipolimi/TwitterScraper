@@ -181,13 +181,17 @@ export class Scraper extends Readable {
     for( const div of divs ) {
       const id = $( div ).attr( 'data-item-id' );
       const text = $( '.tweet-text', div ).text();
+      const retweeter = $( '.original-tweet', div ).attr(' data-retweeter');
       const timestamp = Number( $( '._timestamp', div ).attr( 'data-time' ) );
       // const id = this.unleak( $( div ).attr( 'data-item-id' ) );
       // const text = this.unleak( $( '.tweet-text', div ).text() );
       // const timestamp = Number( this.unleak( $( '._timestamp', div ).attr( 'data-time' ) ) );
       const date = new Date( timestamp*1000 );
 
-      tweets.push( { id, text, timestamp, date } );
+
+     
+
+      tweets.push( { id, text, timestamp, date , retweeter} );
     }
 
     return tweets;
