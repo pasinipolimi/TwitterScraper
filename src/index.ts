@@ -188,9 +188,6 @@ export class Scraper extends Readable {
       // const timestamp = Number( this.unleak( $( '._timestamp', div ).attr( 'data-time' ) ) );
       const date = new Date( timestamp*1000 );
 
-
-     
-
       tweets.push( { id, text, timestamp, date , retweeter} );
     }
 
